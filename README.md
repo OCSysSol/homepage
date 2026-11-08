@@ -14,22 +14,22 @@ Public marketing and business homepage for **Owners Corporation System Solutions
 To run locally with any static web server:
 
 ```bash
-# Using Python
-python3 -m http.server 8080
+# Using Cloudflare Wrangler CLI (recommended - runs static assets from public/ and Pages Functions from functions/)
+npx wrangler pages dev
 
-# Or using Cloudflare Wrangler CLI (to test Pages Functions locally)
-npx wrangler pages dev .
+# Or using Python from public directory
+python3 -m http.server 8080 -d public
 ```
 
-Visit `http://localhost:8080` in your browser.
+Visit `http://localhost:8788` (or `http://localhost:8080`) in your browser.
 
 ## 📦 Cloudflare Pages Setup
 
-1. Push this repository to GitHub under `OCSysSol/ocss-homepage`.
+1. Push this repository to GitHub under `OCSysSol/homepage` (or `OCSysSol/ocss-homepage`).
 2. In the [Cloudflare Dashboard](https://dash.cloudflare.com/):
    - Navigate to **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
-   - Select `OCSysSol/ocss-homepage`.
+   - Select your repository.
    - **Framework preset:** `None`
    - **Build command:** *(leave blank)*
-   - **Build output directory:** `/` (or root)
+   - **Build output directory:** `public` (also defined in `wrangler.toml`)
 3. Under **Custom domains**, add `ocss.tech` and `www.ocss.tech`.
