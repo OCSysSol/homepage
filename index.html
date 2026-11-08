@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>OC System Solutions — Strata AGM Voting, Simplified.</title>
+  
+  <meta name="description" content="Compliant electronic AGM voting for Owners Corporations & Strata Managers. Table floor amendments live, enforce statutory arrears rules, and calculate unit entitlements in real time." />
+  <meta name="keywords" content="strata voting, AGM voting software, owners corporation, body corporate voting, strata management, electronic voting AGM Australia" />
+  <meta name="author" content="OC System Solutions" />
+  <meta name="theme-color" content="#0C1B2E" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OC System Solutions — Strata AGM Voting, Simplified." />
+  <meta property="og:description" content="AGMs finish on time. Zero paper. Zero manual counting. Built for Australian strata legislation." />
+  <meta property="og:image" content="/public/ocss-mark.png" />
+  <meta property="og:url" content="https://ocss.tech" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+  <link rel="apple-touch-icon" href="/public/ocss-mark.png" />
+
+  <!-- Preload Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Overpass+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ocss-navy: #0C1B2E;
+      --ocss-navy-mid: #152438;
+      --ocss-teal: #005F73;
+      --ocss-teal-light: #59A6A4;
+      --ocss-gold: #D19A4D;
+      --ocss-gold-light: #EDD98A;
+      --ocss-coral: #C55642;
+      --ocss-linen: #F5F0E8;
+      --ocss-linen-200: #EBE4D6;
+      --ocss-surface: #FFFFFF;
+      --ocss-surface-subtle: #FAF7F2;
+      --ocss-text: #0C1B2E;
+      --ocss-text-muted: #5A6A7E;
+      --ocss-border: #D8D0C0;
+      --ocss-success: #1B7A40;
+      --ocss-success-bg: #EBF5EF;
+      --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-mono: 'Overpass Mono', Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--ocss-linen);
+      color: var(--ocss-text);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .serif-heading {
+      font-family: var(--font-serif);
+      letter-spacing: -0.025em;
+    }
+
+    .mono-num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    .surface-card {
+      background-color: var(--ocss-surface);
+      border: 1px solid var(--ocss-border);
+      border-radius: 1rem;
+      box-shadow: 0 1px 3px rgba(12, 27, 46, 0.04);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 0.625rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      min-height: 44px;
+    }
+
+    .btn-teal {
+      background-color: var(--ocss-teal);
+      color: #FFFFFF;
+    }
+    .btn-teal:hover {
+      background-color: #004D5E;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--ocss-text);
+      border: 1.5px solid rgba(12, 27, 46, 0.25);
+    }
+    .btn-outline:hover {
+      background-color: var(--ocss-linen-200);
+      border-color: var(--ocss-navy);
+    }
+
+    /* Grid layout utilities */
+    .grid { display: grid; }
+    .grid-3 { grid-template-columns: repeat(1, 1fr); gap: 1.25rem; }
+    @media (min-width: 768px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    }
+
+    /* Header */
+    header {
+      background-color: var(--ocss-navy);
+      color: #FFFFFF;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 4.25rem;
+    }
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 1.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .nav-links a:hover { color: #FFFFFF; }
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3.5rem 0 4.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--ocss-border);
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      background-color: var(--ocss-linen-200);
+      color: var(--ocss-teal);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.25rem;
+    }
+    .badge-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background-color: var(--ocss-teal-light);
+    }
+    .hero-title {
+      font-size: 2.25rem;
+      line-height: 1.15;
+      color: var(--ocss-navy);
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .hero-title { font-size: 3.25rem; }
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--ocss-text-muted);
+      max-width: 620px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    @media (min-width: 640px) {
+      .hero-sub { font-size: 1.2rem; }
+    }
+    .hero-ctas {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (min-width: 640px) {
+      .hero-ctas { flex-direction: row; }
+    }
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 580px;
+      margin: 2.75rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--ocss-border);
+    }
+
+    /* Cards section */
+    .section-why {
+      padding: 3.5rem 0 4rem;
+      border-bottom: 1px solid var(--ocss-border);
+      background-color: var(--ocss-surface-subtle);
+    }
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .section-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ocss-teal);
+      margin-bottom: 0.35rem;
+    }
+    .punch-card {
+      padding: 1.75rem;
+      border-top: 4px solid var(--ocss-teal);
+    }
+    .punch-card.gold { border-top-color: var(--ocss-gold); }
+    .punch-card.coral { border-top-color: var(--ocss-coral); }
+
+    /* Comparison section */
+    .section-compare {
+      padding: 3.5rem 0 4rem;
+      border-bottom: 1px solid var(--ocss-border);
+    }
+    .compare-list {
+      max-width: 820px;
+      margin: 0 auto;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--ocss-border);
+      background-color: var(--ocss-surface);
+    }
+    .compare-row {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--ocss-border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    @media (min-width: 640px) {
+      .compare-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .check-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background-color: var(--ocss-success-bg);
+      color: var(--ocss-success);
+      align-self: flex-start;
+    }
+
+    /* Workflow section */
+    .section-workflow {
+      padding: 3.5rem 0 4rem;
+      border-bottom: 1px solid var(--ocss-border);
+      background-color: var(--ocss-surface-subtle);
+    }
+    .step-box {
+      padding: 1.5rem;
+      background-color: var(--ocss-surface);
+      border: 1px solid var(--ocss-border);
+      border-radius: 0.875rem;
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ocss-teal);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Contact / CTA section */
+    .section-contact {
+      padding: 4rem 0;
+      background-color: var(--ocss-navy);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    .contact-box {
+      max-width: 480px;
+      margin: 2rem auto 0;
+      background-color: var(--ocss-surface);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      color: var(--ocss-text);
+      text-align: left;
+    }
+    .form-group {
+      margin-bottom: 0.875rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ocss-text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      border: 1px solid var(--ocss-border);
+      border-radius: 0.5rem;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--ocss-teal);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #08121F;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.75rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @media (min-width: 640px) {
+      .footer-inner { flex-direction: row; }
+    }
+
+    /* Sticky Mobile Action Bar */
+    .mobile-bar {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #FFFFFF;
+      padding: 0.6rem 1rem;
+      border-top: 1px solid var(--ocss-border);
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+      z-index: 50;
+    }
+    .mobile-bar a {
+      width: 100%;
+      text-align: center;
+    }
+    @media (min-width: 768px) {
+      .mobile-bar { display: none; }
+      body { padding-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SITE HEADER -->
+  <header>
+    <div class="container header-inner">
+      <a href="#top" style="display: flex; align-items: center;">
+        <img 
+          src="/public/logo.svg" 
+          alt="OC System Solutions" 
+          style="height: 38px; width: auto; filter: brightness(0) invert(1);"
+          onerror="this.onerror=null; this.src='/public/ocss-mark.png';"
+        />
+      </a>
+
+      <nav class="nav-links">
+        <a href="#why">Why OCSS</a>
+        <a href="#how">How It Works</a>
+        <a href="#compare">vs Legacy Tools</a>
+      </nav>
+
+      <a href="#contact" class="btn btn-teal" style="font-size: 0.75rem; padding: 0.5rem 1rem; min-height: 38px;">
+        Get Started
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="top" class="hero">
+    <div class="container">
+      
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        OCSS · VotingMS Solution
+      </div>
+
+      <h1 class="serif-heading hero-title">
+        AGMs finish on time.<br />
+        <span style="color: var(--ocss-teal);">Zero paper. Zero manual counting.</span>
+      </h1>
+
+      <p class="hero-sub">
+        The compliant electronic voting platform for Owners Corporations. Live floor amendments, multi-lot proxies, and unit entitlements calculated in real time.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-teal" style="min-width: 220px;">
+          Request an Agency Pilot
+        </a>
+        <a href="#why" class="btn btn-outline" style="min-width: 200px;">
+          See the 3 Big Wins ↓
+        </a>
+      </div>
+
+      <!-- 3 Rapid Punch Numbers -->
+      <div class="stat-strip">
+        <div>
+          <div class="mono-num" style="font-size: 1.75rem; font-weight: 700; color: var(--ocss-navy);">&lt; 30s</div>
+          <div style="font-size: 0.75rem; color: var(--ocss-text-muted); font-weight: 500; margin-top: 0.25rem;">Passwordless Login</div>
+        </div>
+        <div>
+          <div class="mono-num" style="font-size: 1.75rem; font-weight: 700; color: var(--ocss-teal);">100%</div>
+          <div style="font-size: 0.75rem; color: var(--ocss-text-muted); font-weight: 500; margin-top: 0.25rem;">Statutory Compliance</div>
+        </div>
+        <div>
+          <div class="mono-num" style="font-size: 1.75rem; font-weight: 700; color: var(--ocss-gold);">$0</div>
+          <div style="font-size: 0.75rem; color: var(--ocss-text-muted); font-weight: 500; margin-top: 0.25rem;">Portfolio Minimum Tax</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 PUNCH CARDS: THE 10-SECOND REASON TO BUY -->
+  <section id="why" class="section-why">
+    <div class="container">
+      
+      <div class="section-header">
+        <div class="section-label">Operational Relief</div>
+        <h2 class="serif-heading" style="font-size: 1.85rem; color: var(--ocss-navy);">Three reasons strata managers switch to OCSS.</h2>
+      </div>
+
+      <div class="grid grid-3">
+        
+        <div class="surface-card punch-card">
+          <div class="section-label" style="margin-bottom: 0.5rem;">01 / Floor Flexibility</div>
+          <h3 class="serif-heading" style="font-size: 1.25rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.5rem;">
+            Table amendments live. No paper scrambles.
+          </h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted); line-height: 1.6;">
+            When a budget or by-law is amended from the floor, stage it live in seconds. Never abandon software for paper slips mid-meeting.
+          </p>
+        </div>
+
+        <div class="surface-card punch-card gold">
+          <div class="section-label" style="color: var(--ocss-gold); margin-bottom: 0.5rem;">02 / Zero Support Noise</div>
+          <h3 class="serif-heading" style="font-size: 1.25rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.5rem;">
+            1 email login for all owned &amp; proxy lots.
+          </h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted); line-height: 1.6;">
+            Voters enter their email once to unlock all their units and proxies. 1-click batch voting eliminates confused phone calls to the manager.
+          </p>
+        </div>
+
+        <div class="surface-card punch-card coral">
+          <div class="section-label" style="color: var(--ocss-coral); margin-bottom: 0.5rem;">03 / Tribunal Protection</div>
+          <h3 class="serif-heading" style="font-size: 1.25rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.5rem;">
+            Arrears rules enforced automatically.
+          </h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted); line-height: 1.6;">
+            Unfinancial owners are automatically barred from General Motions while legally protected on Special Resolutions. Zero calculation liability.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS: 3 FAST STEPS -->
+  <section id="how" class="section-workflow">
+    <div class="container">
+      
+      <div class="section-header">
+        <div class="section-label">Streamlined AGM Night</div>
+        <h2 class="serif-heading" style="font-size: 1.85rem; color: var(--ocss-navy);">Up and running in 3 simple steps.</h2>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="step-box">
+          <div class="step-num">Step 01</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.35rem;">Import Strata Roll</h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Upload your Excel/CSV. Entitlements and owner emails are snapshotted instantly.</p>
+        </div>
+
+        <div class="step-box">
+          <div class="step-num">Step 02</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.35rem;">Voters Cast Ballots</h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Owners pre-vote online or join live on meeting night via phone or laptop.</p>
+        </div>
+
+        <div class="step-box">
+          <div class="step-num">Step 03</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--ocss-navy); margin-bottom: 0.35rem;">Minutes in Your Inbox</h3>
+          <p style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Click close. Full certified entitlement tallies are emailed immediately.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PUNCHY COMPARISON (No competitor names) -->
+  <section id="compare" class="section-compare">
+    <div class="container">
+      
+      <div class="section-header">
+        <div class="section-label">Head-to-Head</div>
+        <h2 class="serif-heading" style="font-size: 1.85rem; color: var(--ocss-navy);">OCSS vs. Traditional Platforms</h2>
+      </div>
+
+      <div class="compare-list">
+        
+        <div class="compare-row">
+          <div>
+            <div style="font-weight: 700; font-size: 0.9375rem; color: var(--ocss-navy);">Portfolio Commitments</div>
+            <div style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Traditional tools: Mandatory 1,000-lot minimums &amp; costly setup fees.</div>
+          </div>
+          <span class="check-badge">✓ Zero minimums with OCSS</span>
+        </div>
+
+        <div class="compare-row">
+          <div>
+            <div style="font-weight: 700; font-size: 0.9375rem; color: var(--ocss-navy);">Live Hybrid Floor Voting</div>
+            <div style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Traditional tools: Expensive add-on module or paper backup required.</div>
+          </div>
+          <span class="check-badge">✓ Included in core platform</span>
+        </div>
+
+        <div class="compare-row">
+          <div>
+            <div style="font-weight: 700; font-size: 0.9375rem; color: var(--ocss-navy);">Multi-Lot &amp; Proxy Voting</div>
+            <div style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Traditional tools: Sends separate links per lot, confusing owners.</div>
+          </div>
+          <span class="check-badge">✓ 1 login for all lots</span>
+        </div>
+
+        <div class="compare-row">
+          <div>
+            <div style="font-weight: 700; font-size: 0.9375rem; color: var(--ocss-navy);">Agency Brand &amp; Privacy</div>
+            <div style="font-size: 0.8125rem; color: var(--ocss-text-muted);">Traditional tools: Generic shared vendor emails and portal URLs.</div>
+          </div>
+          <span class="check-badge">✓ Dedicated white-label environment</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAST CONSULTATION SECTION -->
+  <section id="contact" class="section-contact">
+    <div class="container">
+      
+      <div style="max-width: 540px; margin: 0 auto;">
+        <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ocss-gold-light); margin-bottom: 0.5rem;">
+          Fast Onboarding
+        </div>
+        <h2 class="serif-heading" style="font-size: 2.25rem; line-height: 1.2; margin-bottom: 0.75rem;">
+          Ready to upgrade your next AGM?
+        </h2>
+        <p style="font-size: 0.9375rem; color: rgba(255, 255, 255, 0.75);">
+          Get in touch to arrange a tailored walkthrough for your agency or scheme portfolio.
+        </p>
+      </div>
+
+      <div class="contact-box">
+        <form onsubmit="handleContactSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Your Name &amp; Agency</label>
+            <input type="text" id="contact-name" required placeholder="Sarah Jenkins · Apex Strata" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Work Email</label>
+            <input type="email" id="contact-email" required placeholder="sarah@apexstrata.com.au" class="form-input" />
+          </div>
+          <button type="submit" id="submit-btn" class="btn btn-teal" style="width: 100%; margin-top: 0.5rem;">
+            Request Consultation
+          </button>
+        </form>
+        <div style="font-size: 0.75rem; color: var(--ocss-text-muted); margin-top: 0.85rem; text-align: center;">
+          Or email directly: <a href="mailto:hello@ocss.tech" style="color: var(--ocss-teal); font-weight: 600; text-decoration: underline;">hello@ocss.tech</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMPACT FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2026 Owners Corporation System Solutions (OCSS).</div>
+      <a href="#top" style="color: rgba(255, 255, 255, 0.75);">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- STICKY MOBILE ACTION BAR -->
+  <div class="mobile-bar">
+    <a href="#contact" class="btn btn-teal">
+      Request Consultation
+    </a>
+  </div>
+
+  <script>
+    async function handleContactSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        if (res.ok) {
+          btn.textContent = '✓ Inquiry Sent — We will be in touch!';
+          btn.style.backgroundColor = 'var(--ocss-success)';
+          e.target.reset();
+        } else {
+          throw new Error('API returned error');
+        }
+      } catch (err) {
+        // Fallback: open mail client
+        window.location.href = `mailto:hello@ocss.tech?subject=AGM%20Voting%20Consultation%20Inquiry%20from%20${encodeURIComponent(name)}&body=Name:%20${encodeURIComponent(name)}%0AEmail:%20${encodeURIComponent(email)}`;
+        btn.textContent = '✓ Opening email client…';
+        btn.style.backgroundColor = 'var(--ocss-success)';
+      }
+
+      setTimeout(() => {
+        btn.textContent = 'Request Consultation';
+        btn.style.backgroundColor = 'var(--ocss-teal)';
+        btn.disabled = false;
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
