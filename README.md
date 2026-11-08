@@ -4,33 +4,32 @@ Public marketing and business homepage for **Owners Corporation System Solutions
 
 ## 🚀 Architecture & Deployment
 
-- **Hosting:** Cloudflare Workers (with Static Assets) or Cloudflare Pages
+- **Hosting:** Cloudflare Pages
 - **Stack:** Pure HTML5, Modern CSS custom properties, minimal Vanilla JavaScript (Zero build step, instant global CDN delivery).
-- **Backend / API:** Serverless `/api/contact` handling with optional webhook alerts (`src/index.js` & `functions/api/contact.js`).
-- **Assets:** Vector SVG branding and typography optimized for mobile and desktop screens (`public/`).
+- **Functions:** Cloudflare Pages Functions (`/functions/api/contact.js`) for serverless contact handling and optional webhook alerts.
+- **Assets:** Vector SVG branding and typography optimized for mobile and desktop screens.
 
 ## 🛠 Local Development
 
-To run locally with Wrangler:
+To run locally with any static web server:
 
 ```bash
-# Using Cloudflare Wrangler CLI (runs static assets from public/ and API routes)
-npx wrangler dev
+# Using Cloudflare Wrangler CLI (recommended - runs static assets from public/ and Pages Functions from functions/)
+npx wrangler pages dev
 
 # Or using Python from public directory
 python3 -m http.server 8080 -d public
 ```
 
-Visit `http://localhost:8787` (or `http://localhost:8080`) in your browser.
+Visit `http://localhost:8788` (or `http://localhost:8080`) in your browser.
 
-## 📦 Cloudflare Deployment
+## 📦 Cloudflare Pages Setup
 
-This repository is configured to deploy directly to **Cloudflare Workers** (Workers Builds) or **Cloudflare Pages**:
-
-1. In the [Cloudflare Dashboard](https://dash.cloudflare.com/):
-   - Navigate to **Workers & Pages** > **Create application** > **Import from Git** (or **Pages** > **Connect to Git**).
-   - Select `OCSysSol/homepage`.
-   - Cloudflare will automatically read `wrangler.toml` (`main = "src/index.js"`, `[assets] directory = "public"`).
+1. Push this repository to GitHub under `OCSysSol/homepage` (or `OCSysSol/ocss-homepage`).
+2. In the [Cloudflare Dashboard](https://dash.cloudflare.com/):
+   - Navigate to **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
+   - Select your repository.
+   - **Framework preset:** `None`
    - **Build command:** *(leave blank)*
-   - **Deploy!**
-2. Under **Settings** > **Domains & Routes**, add `ocss.tech` and `www.ocss.tech`.
+   - **Build output directory:** `public` (also defined in `wrangler.toml`)
+3. Under **Custom domains**, add `ocss.tech` and `www.ocss.tech`.
