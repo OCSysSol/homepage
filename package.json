@@ -1,0 +1,14 @@
+{
+  "name": "ocss-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OCSS official homepage powered by Cloudflare Workers and Static Assets",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.158.0"
+  }
+}

@@ -1,6 +1,5 @@
-export async function onRequestPost(context) {
+export async function handleContact(request, env) {
   try {
-    const { request, env } = context;
     const body = await request.json();
     const { name, email } = body || {};
 
@@ -11,7 +10,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    // If a webhook (e.g., Slack, Discord, Zapier) is configured in Cloudflare Pages Environment variables:
+    // Optional webhook integration (Slack, Discord, Zapier, etc.)
     if (env && env.INQUIRY_WEBHOOK_URL) {
       try {
         await fetch(env.INQUIRY_WEBHOOK_URL, {
@@ -43,7 +42,7 @@ export async function onRequestPost(context) {
   }
 }
 
-export async function onRequestOptions() {
+export function handleOptions() {
   return new Response(null, {
     status: 204,
     headers: {
