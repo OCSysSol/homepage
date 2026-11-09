@@ -178,7 +178,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 4.5rem;
+      height: 5rem;
+    }
+    .site-logo {
+      height: 50px;
+      width: auto;
+      display: block;
+      transition: opacity 0.18s ease;
+    }
+    .site-logo:hover {
+      opacity: 0.92;
     }
     .nav-links {
       display: none;
@@ -191,6 +200,8 @@
     }
     .nav-links a:hover { color: #FFFFFF; }
     @media (min-width: 768px) {
+      .header-inner { height: 5.5rem; }
+      .site-logo { height: 60px; }
       .nav-links { display: flex; }
     }
 
@@ -471,11 +482,11 @@
   <!-- SITE HEADER -->
   <header>
     <div class="container header-inner">
-      <a href="#top" style="display: flex; align-items: center;">
+      <a href="#top" style="display: flex; align-items: center; text-decoration: none;">
         <img 
           src="/logo.svg" 
           alt="OC System Solutions" 
-          style="height: 38px; width: auto; filter: brightness(0) invert(1);"
+          class="site-logo"
           onerror="this.onerror=null; this.src='/ocss-mark.png';"
         />
       </a>
